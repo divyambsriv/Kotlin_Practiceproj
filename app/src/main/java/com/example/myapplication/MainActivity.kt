@@ -1,60 +1,45 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.myapplication
 
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.viewpager2.widget.ViewPager2
 
 class MainActivity : ComponentActivity() {
-    private var currentImage = 0
-    lateinit var image : ImageView
-    var places = arrayOf("Taj Mahal","Lotus Temple","India Gate","Golden Temple","Gateway of India","Sanchi Stupa","Char Minar","Red Fort")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val prev = findViewById<ImageButton>(R.id.btnPrev)
-        val next = findViewById<ImageButton>(R.id.btnNext)
-        val placename = findViewById<TextView>(R.id.tVName)
+        val viewPager: ViewPager2 = findViewById(R.id.viewPager)
+        val btnPrev: ImageButton = findViewById(R.id.btnPrev)
+        val btnNext: ImageButton = findViewById(R.id.btnNext)
 
-        next.setOnClickListener {
-            var idcurrentimageString = "pic$currentImage"
+        val monuments = listOf(
+            Monument("Taj Mahal", "A beautiful mausoleum in Agra.", R.drawable.taj_mahal),
+            Monument("Lotus Temple", "A Baháʼí House of Worship in New Delhi.", R.drawable.lotus_temple),
+            Monument("Red Fort", "Historic fort in the city of Delhi in India.", R.drawable.red_fort),
+            Monument("India Gate", "A war memorial located astride the Rajpath.", R.drawable.india_gate),
+            Monument("Qutub Minar", "A minaret that forms part of the Qutb complex.", R.drawable.qutub_minar),
+            Monument("Humayun's Tomb", "Tomb of the Mughal Emperor Humayun in Delhi.", R.drawable.sanchi_stupa),
+            Monument("Hawa Mahal", "A palace in Jaipur, India.", R.drawable.hawa_mahal),
+            Monument("Mysore Palace", "A historical palace in the city of Mysore.", R.drawable.charminar)
+        )
 
-            var idcurrentimageInt = this.resources.getIdentifier(idcurrentimageString, "id", packageName)
-            image = findViewById(idcurrentimageInt)
-            image.alpha = 0f
+        viewPager.adapter = MonumentPagerAdapter(monuments)
 
-            currentImage = (8+currentImage+1)%8
-            var idImagetoshowString = "pic$currentImage"
-            var idImagetoshowInt = this.resources.getIdentifier(idImagetoshowString, "id", packageName)
-            image = findViewById(idImagetoshowInt)
-            image.alpha = 1f
-            placename.text=places[currentImage]
-
+        // Set click listeners for buttons
+        btnPrev.setOnClickListener {
+            val currentItem = viewPager.currentItem
+            if (currentItem > 0) {
+                viewPager.currentItem = currentItem - 1
+            }
         }
 
-
-        prev.setOnClickListener {
-            var idcurrentimageString = "pic$currentImage"
-
-            var idcurrentimageInt = this.resources.getIdentifier(idcurrentimageString, "id", packageName)
-            image = findViewById(idcurrentimageInt)
-            image.alpha = 0f
-
-            currentImage = (7+currentImage-1)%7
-            var idImagetoshowString = "pic$currentImage"
-            var idImagetoshowInt = this.resources.getIdentifier(idImagetoshowString, "id", packageName)
-            image = findViewById(idImagetoshowInt)
-            image.alpha = 1f
-            placename.text=places[currentImage]
-
+        btnNext.setOnClickListener {
+            val currentItem = viewPager.currentItem
+            if (currentItem < monuments.size - 1) {
+                viewPager.currentItem = currentItem + 1
+            }
         }
     }
 }
-
-
